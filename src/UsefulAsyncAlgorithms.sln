@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debounce", "Debounce", "{02
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debounce", "Debounce\Debounce\Debounce.csproj", "{7E590F79-5020-4F29-B078-675AD5153D33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebounceTests", "Debounce\DebounceTests\DebounceTests.csproj", "{47351A26-1F8B-4FC0-8568-95655FA275D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{7E590F79-5020-4F29-B078-675AD5153D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E590F79-5020-4F29-B078-675AD5153D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E590F79-5020-4F29-B078-675AD5153D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47351A26-1F8B-4FC0-8568-95655FA275D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47351A26-1F8B-4FC0-8568-95655FA275D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47351A26-1F8B-4FC0-8568-95655FA275D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47351A26-1F8B-4FC0-8568-95655FA275D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
