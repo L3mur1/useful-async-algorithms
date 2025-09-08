@@ -60,6 +60,7 @@ namespace Debounce.FileEvents
             var threshold = DateTime.UtcNow - debounceWindow;
             foreach (var kvp in lastEventTimes)
             {
+                // Remove entries older than the threshold
                 if (kvp.Value < threshold)
                 {
                     lastEventTimes.TryRemove(kvp.Key, out _);
@@ -82,6 +83,7 @@ namespace Debounce.FileEvents
                 }
             }
 
+            // Publish event and update last event time for path
             lastEventTimes[fileEvent.Path] = now;
             subject.OnNext(fileEvent);
         }
