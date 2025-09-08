@@ -1,6 +1,4 @@
-﻿using Debounce;
-using Debounce.FileEvents;
-using Xunit;
+﻿using Debounce.FileEvents;
 
 namespace DebounceTests.FileEvents
 {
