@@ -5,17 +5,25 @@ namespace Debounce.FileEvents
 {
     public class FileEventsDebouncer : IDisposable
     {
+        /// <summary>
+        /// Events with the same path within this time span are ignored.
+        /// </summary>,
+        private readonly TimeSpan debounceWindow;
+
+        // Stores the last event time for each file path to support debouncing.
+        // NOTE: In a real application, this dictionary should be periodically cleaned up
+        // to avoid memory leaks from paths that are no longer active.
         private readonly ConcurrentDictionary<string, DateTime> lastEventTimes = new();
+
         private readonly Publisher<FileEvent> publisher;
         private readonly Subject<FileEvent> subject = new();
         private readonly IDisposable subscription;
-        private readonly TimeSpan window;
         public IObservable<FileEvent> FileEventStream => subject;
 
-        public FileEventsDebouncer(Publisher<FileEvent> publisher, TimeSpan window)
+        public FileEventsDebouncer(Publisher<FileEvent> publisher, TimeSpan debounceWindow)
         {
             this.publisher = publisher;
-            this.window = window;
+            this.debounceWindow = debounceWindow;
             subscription = publisher.PublishableStream.Subscribe(OnNext);
         }
 
@@ -35,14 +43,17 @@ namespace Debounce.FileEvents
             }
         }
 
+        /// <summary>
+        /// Handles incoming events and applies debouncing based on the window and path.
+        /// </summary>
         private void OnNext(FileEvent fileEvent)
         {
             var now = fileEvent.PublishTime;
             if (lastEventTimes.TryGetValue(fileEvent.Path, out var lastTime))
             {
-                if (now - lastTime < window)
+                if (now - lastTime < debounceWindow)
                 {
-                    // Ignore event within window
+                    // Ignore event within deboucing window
                     return;
                 }
             }
