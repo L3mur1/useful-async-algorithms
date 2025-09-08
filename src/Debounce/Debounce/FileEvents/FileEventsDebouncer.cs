@@ -3,6 +3,11 @@ using System.Reactive.Subjects;
 
 namespace Debounce.FileEvents
 {
+    /// <summary>
+    /// Simple window-based debouncer for file events.
+    /// Emits events only once per file path within a specified time window.
+    /// Useful for filtering out rapid duplicate events for the same file.
+    /// </summary>
     public class FileEventsDebouncer : IDisposable
     {
         /// <summary>
