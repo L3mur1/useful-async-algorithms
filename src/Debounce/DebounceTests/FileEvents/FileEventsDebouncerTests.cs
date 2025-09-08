@@ -28,12 +28,13 @@ namespace DebounceTests.FileEvents
         public async Task EventsStream_ShouldContainEventsWithSamePath_WhenOutOfWindow()
         {
             // Arrange
-            var window = TimeSpan.FromMilliseconds(5);
+            var debounceWindow = TimeSpan.FromMilliseconds(5);
             var eventsDelay = TimeSpan.FromMilliseconds(10);
             var testDuration = TimeSpan.FromSeconds(1);
+            var cleanUpInterval = TimeSpan.FromMinutes(1);
 
             var publisher = new Publisher<FileEvent>(fileEvents);
-            var debouncer = new FileEventsDebouncer(publisher, window);
+            var debouncer = new FileEventsDebouncer(publisher, debounceWindow, cleanUpInterval);
 
             var receivedEvents = new List<FileEvent>();
             debouncer.FileEventStream.Subscribe(receivedEvents.Add);
@@ -51,12 +52,13 @@ namespace DebounceTests.FileEvents
         public async Task EventsStream_ShouldNotContainEventsWithSamePath_WhenInWindow()
         {
             // Arrange
-            var window = TimeSpan.FromSeconds(2);
+            var debounceWindow = TimeSpan.FromSeconds(2);
             var eventsDelay = TimeSpan.FromMilliseconds(10);
             var testDuration = TimeSpan.FromSeconds(1);
+            var cleanUpInterval = TimeSpan.FromMinutes(1);
 
             var publisher = new Publisher<FileEvent>(fileEvents);
-            var debouncer = new FileEventsDebouncer(publisher, window);
+            var debouncer = new FileEventsDebouncer(publisher, debounceWindow, cleanUpInterval);
 
             var receivedEvents = new List<FileEvent>();
             debouncer.FileEventStream.Subscribe(receivedEvents.Add);
