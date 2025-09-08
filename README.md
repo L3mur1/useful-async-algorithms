@@ -5,7 +5,7 @@ These techniques are especially helpful in **event-driven systems** where handli
 
 ## Articles (Polish)
 
-This repository contains code samples for my Polish blog series:
+This repository contains code samples for my Polish blog series:    
 https://beniaminlenarcik.pl/series/uzyteczne-algorytmy-w-systemach-opartych-na-zdarzeniach 
 
 ## Purpose
