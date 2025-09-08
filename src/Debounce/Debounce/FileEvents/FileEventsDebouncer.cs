@@ -42,12 +42,9 @@ namespace Debounce.FileEvents
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                subscription.Dispose();
-                subject.Dispose();
-                publisher.Dispose();
-            }
+            subscription.Dispose();
+            subject.Dispose();
+            publisher.Dispose();
         }
 
         /// <summary>
