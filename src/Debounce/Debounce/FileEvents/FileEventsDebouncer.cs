@@ -45,6 +45,7 @@ namespace Debounce.FileEvents
             subscription.Dispose();
             subject.Dispose();
             publisher.Dispose();
+            cleanUpSub.Dispose();
         }
 
         /// <summary>
@@ -70,10 +71,10 @@ namespace Debounce.FileEvents
         /// </summary>
         private void OnNext(FileEvent fileEvent)
         {
-            var now = fileEvent.PublishTime;
             if (lastEventTimes.TryGetValue(fileEvent.Path, out var lastTime))
             {
-                if (now - lastTime < debounceWindow)
+                // Check if the event is within the debounce window
+                if (fileEvent.PublishTime - lastTime < debounceWindow)
                 {
                     // Ignore event within deboucing window
                     return;
@@ -81,7 +82,7 @@ namespace Debounce.FileEvents
             }
 
             // Publish event and update last event time for path
-            lastEventTimes[fileEvent.Path] = now;
+            lastEventTimes[fileEvent.Path] = fileEvent.PublishTime;
             subject.OnNext(fileEvent);
         }
     }
