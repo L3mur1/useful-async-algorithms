@@ -1,8 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using UsefulAsyncAlgorithms;
 
-namespace Debounce.FileEvents
+namespace UsefulAsyncAlgorithms.Debounce
 {
     /// <summary>
     /// Simple window-based debouncer for file events.

@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Subjects;
 
-namespace Debounce
+namespace UsefulAsyncAlgorithms
 {
     public class Publisher<TPublishable>(IEnumerable<TPublishable> publishables) : IDisposable
         where TPublishable : IPublishable<TPublishable>

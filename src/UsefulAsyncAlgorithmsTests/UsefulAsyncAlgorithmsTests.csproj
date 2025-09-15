@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Debounce\Debounce.csproj" />
+    <ProjectReference Include="..\UsefulAsyncAlgorithms\UsefulAsyncAlgorithms.csproj" />
   </ItemGroup>
 
 </Project>

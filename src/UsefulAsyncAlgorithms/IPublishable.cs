@@ -1,4 +1,4 @@
-﻿namespace Debounce
+﻿namespace UsefulAsyncAlgorithms
 {
     public interface IPublishable<TPublishable>
     {

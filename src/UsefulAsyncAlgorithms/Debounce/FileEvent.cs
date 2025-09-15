@@ -1,4 +1,6 @@
-﻿namespace Debounce.FileEvents
+﻿using UsefulAsyncAlgorithms;
+
+namespace UsefulAsyncAlgorithms.Debounce
 {
     public record FileEvent(string Path, DateTime PublishTime) : IPublishable<FileEvent>
     {
