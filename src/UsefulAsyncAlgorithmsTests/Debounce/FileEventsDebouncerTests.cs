@@ -1,5 +1,4 @@
-﻿using UsefulAsyncAlgorithms;
-using UsefulAsyncAlgorithms.Debounce;
+﻿using UsefulAsyncAlgorithms.Debounce;
 
 namespace UsefulAsyncAlgorithmsTests.Debounce
 {

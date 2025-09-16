@@ -5,7 +5,7 @@ namespace UsefulAsyncAlgorithmsTests.Jitter
     public class EnergyReportFixedJitterTests
     {
         [Fact]
-        public async Task SendWithJitterAsync_ShouldHaveDifferentCompletionTimes_WhenJitterApplied()
+        public async Task ShouldHaveDifferentCompletionTimes_WhenJitterApplied()
         {
             // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
@@ -30,7 +30,7 @@ namespace UsefulAsyncAlgorithmsTests.Jitter
         }
 
         [Fact]
-        public async Task SendWithJitterAsync_ShouldHaveSameCompletionTimes_WhenZeroJitter()
+        public async Task ShouldHaveSameCompletionTimes_WhenZeroJitter()
         {
             // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);

@@ -5,7 +5,7 @@ namespace UsefulAsyncAlgorithmsTests.Jitter
     public class EnergyReportPercentageJitterTests
     {
         [Fact]
-        public async Task SendWithJitterAsync_ShouldHaveDifferentCompletionTimes_WhenJitterApplied()
+        public async Task ShouldHaveDifferentCompletionTimes_WhenJitterApplied()
         {
             // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
@@ -30,7 +30,7 @@ namespace UsefulAsyncAlgorithmsTests.Jitter
         }
 
         [Fact]
-        public async Task SendWithJitterAsync_ShouldHaveSameCompletionTimes_WhenZeroJitter()
+        public async Task ShouldHaveSameCompletionTimes_WhenZeroJitter()
         {
             // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
@@ -73,10 +73,10 @@ namespace UsefulAsyncAlgorithmsTests.Jitter
             var minExpectedDuration = baseDelay.TotalMilliseconds;
             var maxExpectedDuration = baseDelay.TotalMilliseconds * 1.25; // 100% + 25%
 
-            Assert.True(actualDuration.TotalMilliseconds >= minExpectedDuration - 10, 
+            Assert.True(actualDuration.TotalMilliseconds >= minExpectedDuration - 10,
                 $"Duration {actualDuration.TotalMilliseconds:F2}ms should be at least {minExpectedDuration}ms (base delay)");
-            
-            Assert.True(actualDuration.TotalMilliseconds <= maxExpectedDuration + 10, 
+
+            Assert.True(actualDuration.TotalMilliseconds <= maxExpectedDuration + 10,
                 $"Duration {actualDuration.TotalMilliseconds:F2}ms should be at most {maxExpectedDuration}ms (base delay + 25%)");
         }
     }
