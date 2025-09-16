@@ -2,7 +2,7 @@
 
 namespace UsefulAsyncAlgorithmsTests.Jitter
 {
-    public class EnergyReportJitterTests
+    public class EnergyReportFixedJitterTests
     {
         [Fact]
         public async Task SendWithJitterAsync_ShouldHaveDifferentCompletionTimes_WhenJitterApplied()
@@ -10,7 +10,7 @@ namespace UsefulAsyncAlgorithmsTests.Jitter
             // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
             var maxJitter = TimeSpan.FromMilliseconds(50);
-            var jitterWithJitter = new EnergyReportJitter(baseDelay, maxJitter);
+            var jitterWithJitter = new EnergyReportFixedJitter(baseDelay, maxJitter);
 
             // Act - Execute calls sequentially to avoid system load interference
             var startTime1 = DateTime.UtcNow;
@@ -35,7 +35,7 @@ namespace UsefulAsyncAlgorithmsTests.Jitter
             // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
             var maxJitter = TimeSpan.Zero;
-            var jitterWithoutJitter = new EnergyReportJitter(baseDelay, maxJitter);
+            var jitterWithoutJitter = new EnergyReportFixedJitter(baseDelay, maxJitter);
 
             // Act - Execute calls sequentially to avoid system load interference
             var startTime1 = DateTime.UtcNow;
