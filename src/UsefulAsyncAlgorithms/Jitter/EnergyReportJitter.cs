@@ -21,7 +21,7 @@
         /// </summary>
         /// <param name="report">Report to send</param>
         /// <returns>Task representing the asynchronous send operation</returns>
-        public async Task SendWithJitterAsync(EnergyReport _)
+        public async Task SendWithJitterAsync()
         {
             // Calculate random delay: base delay + random jitter
             var jitterMilliseconds = random.Next(0, (int)maxJitter.TotalMilliseconds);
