@@ -34,7 +34,7 @@
                 }
 
                 // Perform the expensive sensor read operation and update cache
-                cachedData = await AirQualitySensor.ReadSensorAsync();
+                cachedData = await airQualitySensor.ReadSensorAsync();
 
                 return cachedData;
             }

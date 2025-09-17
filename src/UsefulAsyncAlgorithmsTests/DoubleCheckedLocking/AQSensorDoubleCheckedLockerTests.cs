@@ -9,7 +9,8 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
         {
             // Arrange
             var validityDuration = TimeSpan.FromMinutes(5);
-            var locker = new ACSensorDoubleCheckedLocker(validityDuration);
+            var sensor = new AirQualitySensor();
+            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
 
             // Act & Assert - First call should work
             var firstData = await locker.GetCurrentDataAsync();
@@ -25,7 +26,8 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
         {
             // Arrange
             var validityDuration = TimeSpan.FromMilliseconds(100);
-            var locker = new ACSensorDoubleCheckedLocker(validityDuration);
+            var sensor = new AirQualitySensor();
+            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
 
             // Act - First call to populate cache
             var firstData = await locker.GetCurrentDataAsync();
@@ -46,36 +48,33 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
         {
             // Arrange
             var validityDuration = TimeSpan.FromMilliseconds(50);
-            var locker = new ACSensorDoubleCheckedLocker(validityDuration);
+            var sensor = new AirQualitySensor();
+            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
 
             // Populate cache first
             await locker.GetCurrentDataAsync();
+            var initialReadCount = sensor.ReadCount;
 
             // Wait for data to expire
             await Task.Delay(validityDuration + TimeSpan.FromMilliseconds(50));
 
             // Act - Multiple concurrent calls
-            var startTime = DateTime.UtcNow;
             var tasks = Enumerable.Range(0, 10)
                 .Select(_ => locker.GetCurrentDataAsync())
                 .ToArray();
 
             var results = await Task.WhenAll(tasks);
-            var endTime = DateTime.UtcNow;
 
-            // Assert - All results should be the same (same cached data)
+            // Assert - Only one additional sensor read should have occurred
+            Assert.Equal(initialReadCount + 1, sensor.ReadCount);
+
+            // All results should be the same (same cached data)
             var firstResult = results[0];
             Assert.All(results, result =>
             {
                 Assert.Same(firstResult, result);
                 Assert.Equal(firstResult.Timestamp, result.Timestamp);
             });
-
-            // Assert - All calls should have completed quickly (indicating they used cached data)
-            // If multiple sensor reads occurred, it would take much longer
-            var totalTime = endTime - startTime;
-            Assert.True(totalTime.TotalMilliseconds < 1000,
-                $"Expected quick completion (cached data), but took {totalTime.TotalMilliseconds}ms");
         }
 
         [Fact]
@@ -83,7 +82,8 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
         {
             // Arrange
             var validityDuration = TimeSpan.FromMinutes(5);
-            var locker = new ACSensorDoubleCheckedLocker(validityDuration);
+            var sensor = new AirQualitySensor();
+            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
 
             // Act - First call to populate cache
             var firstData = await locker.GetCurrentDataAsync();
@@ -101,7 +101,8 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
         {
             // Arrange
             var validityDuration = TimeSpan.FromMilliseconds(200);
-            var locker = new ACSensorDoubleCheckedLocker(validityDuration);
+            var sensor = new AirQualitySensor();
+            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
 
             // Act - Get initial data
             var initialData = await locker.GetCurrentDataAsync();
@@ -122,7 +123,8 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
         {
             // Arrange
             var validityDuration = TimeSpan.FromMinutes(5);
-            var locker = new ACSensorDoubleCheckedLocker(validityDuration);
+            var sensor = new AirQualitySensor();
+            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
 
             // Act - Multiple concurrent calls on valid data
             var tasks = Enumerable.Range(0, 10)
@@ -131,7 +133,10 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
 
             var results = await Task.WhenAll(tasks);
 
-            // Assert - All results should be the same
+            // Assert - Only one sensor read should have occurred
+            Assert.Equal(1, sensor.ReadCount);
+
+            // All results should be the same
             var firstResult = results[0];
             Assert.All(results, result =>
             {
