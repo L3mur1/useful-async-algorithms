@@ -5,23 +5,6 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
     public class AQSensorDoubleCheckedLockerTests
     {
         [Fact]
-        public async Task ShouldHandleExceptions_WithoutCorruptingState()
-        {
-            // Arrange
-            var validityDuration = TimeSpan.FromMinutes(5);
-            var sensor = new AirQualitySensor();
-            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
-
-            // Act & Assert - First call should work
-            var firstData = await locker.GetCurrentDataAsync();
-            Assert.NotNull(firstData);
-
-            // Act & Assert - Subsequent calls should still work
-            var secondData = await locker.GetCurrentDataAsync();
-            Assert.Same(firstData, secondData);
-        }
-
-        [Fact]
         public async Task ShouldPerformNewRead_WhenDataIsExpired()
         {
             // Arrange
@@ -75,47 +58,6 @@ namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
                 Assert.Same(firstResult, result);
                 Assert.Equal(firstResult.Timestamp, result.Timestamp);
             });
-        }
-
-        [Fact]
-        public async Task ShouldReturnCachedData_WhenDataIsStillValid()
-        {
-            // Arrange
-            var validityDuration = TimeSpan.FromMinutes(5);
-            var sensor = new AirQualitySensor();
-            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
-
-            // Act - First call to populate cache
-            var firstData = await locker.GetCurrentDataAsync();
-
-            // Act - Second call should return cached data
-            var secondData = await locker.GetCurrentDataAsync();
-
-            // Assert
-            Assert.Same(firstData, secondData);
-            Assert.Equal(firstData.Timestamp, secondData.Timestamp);
-        }
-
-        [Fact]
-        public async Task ShouldReturnDifferentData_AfterCacheExpiration()
-        {
-            // Arrange
-            var validityDuration = TimeSpan.FromMilliseconds(200);
-            var sensor = new AirQualitySensor();
-            var locker = new AQSensorDoubleCheckedLocker(sensor, validityDuration);
-
-            // Act - Get initial data
-            var initialData = await locker.GetCurrentDataAsync();
-
-            // Wait for expiration
-            await Task.Delay(validityDuration + TimeSpan.FromMilliseconds(100));
-
-            // Act - Get new data
-            var newData = await locker.GetCurrentDataAsync();
-
-            // Assert
-            Assert.NotSame(initialData, newData);
-            Assert.True(newData.Timestamp > initialData.Timestamp);
         }
 
         [Fact]
