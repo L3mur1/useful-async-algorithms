@@ -2,7 +2,10 @@
 {
     public class AirQualitySensor
     {
-        public static async Task<AirQualitySensorData> ReadSensorAsync()
+        private int readCount = 0;
+        public int ReadCount => readCount;
+
+        public async Task<AirQualitySensorData> ReadSensorAsync()
         {
             var randomDelay = Random.Shared.Next(200, 800);
             await Task.Delay(randomDelay);
@@ -14,6 +17,7 @@
                 Timestamp: DateTime.UtcNow
             );
 
+            Interlocked.Increment(ref readCount);
             return data;
         }
     }

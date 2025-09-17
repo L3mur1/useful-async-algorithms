@@ -1,6 +1,6 @@
 ﻿namespace UsefulAsyncAlgorithms.DoubleCheckedLocking
 {
-    public class ACSensorDoubleCheckedLocker(TimeSpan validityDuration) : IDisposable
+    public class AQSensorDoubleCheckedLocker(AirQualitySensor airQualitySensor, TimeSpan validityDuration) : IDisposable
     {
         private readonly SemaphoreSlim semaphore = new(1, 1);
         private AirQualitySensorData? cachedData;
