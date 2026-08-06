@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.9.12023.133 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4F52FD11-658E-A102-6CD3-7D7C16FFA15B}"
 EndProject
@@ -24,6 +24,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleCheckedLockingApp", "DoubleCheckedLocking\DoubleCheckedLockingApp\DoubleCheckedLockingApp.csproj", "{4E454C1F-7103-43DF-ABE7-F4EB513228FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleCheckedLockingAppTests", "DoubleCheckedLocking\DoubleCheckedLockingAppTests\DoubleCheckedLockingAppTests.csproj", "{715941D0-F499-4524-A6CF-C75534D6FF43}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LeakyBucket", "LeakyBucket", "{C0EBECC0-2359-4D34-B104-D670516B16BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeakyBucketApp", "LeakyBucket\LeakyBucketApp\LeakyBucketApp.csproj", "{E463DA5E-9702-6E21-38E4-95A3FBA981E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeakyBucketAppTests", "LeakyBucket\LeakyBucketAppTests\LeakyBucketAppTests.csproj", "{FCC431EC-1B73-7810-1DC4-5FC401806B6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +125,30 @@ Global
 		{715941D0-F499-4524-A6CF-C75534D6FF43}.Release|x64.Build.0 = Release|Any CPU
 		{715941D0-F499-4524-A6CF-C75534D6FF43}.Release|x86.ActiveCfg = Release|Any CPU
 		{715941D0-F499-4524-A6CF-C75534D6FF43}.Release|x86.Build.0 = Release|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Debug|x64.Build.0 = Debug|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Release|x64.ActiveCfg = Release|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Release|x64.Build.0 = Release|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1}.Release|x86.Build.0 = Release|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Debug|x64.Build.0 = Debug|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Debug|x86.Build.0 = Debug|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Release|x64.ActiveCfg = Release|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Release|x64.Build.0 = Release|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Release|x86.ActiveCfg = Release|Any CPU
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,5 +161,7 @@ Global
 		{12A65580-9387-4CE4-9BAF-6DFD30855579} = {222B485B-42E1-6F0C-08FE-917EF41736D3}
 		{4E454C1F-7103-43DF-ABE7-F4EB513228FB} = {14E188A5-0F4D-8FE7-2518-5FE9A0C77EB5}
 		{715941D0-F499-4524-A6CF-C75534D6FF43} = {14E188A5-0F4D-8FE7-2518-5FE9A0C77EB5}
+		{E463DA5E-9702-6E21-38E4-95A3FBA981E1} = {C0EBECC0-2359-4D34-B104-D670516B16BB}
+		{FCC431EC-1B73-7810-1DC4-5FC401806B6E} = {C0EBECC0-2359-4D34-B104-D670516B16BB}
 	EndGlobalSection
 EndGlobal
