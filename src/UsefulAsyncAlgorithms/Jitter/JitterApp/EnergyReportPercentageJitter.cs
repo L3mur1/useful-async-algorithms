@@ -1,4 +1,4 @@
-namespace UsefulAsyncAlgorithms.Jitter
+namespace JitterApp
 {
     /// <summary>
     /// Percentage jitter that prevents server overload by spreading energy reports over time.

@@ -1,6 +1,6 @@
-﻿using UsefulAsyncAlgorithms.Jitter;
+﻿using JitterApp;
 
-namespace UsefulAsyncAlgorithmsTests.Jitter
+namespace JitterAppTests
 {
     public class EnergyReportFixedJitterTests
     {

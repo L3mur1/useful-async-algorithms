@@ -1,4 +1,4 @@
-﻿namespace UsefulAsyncAlgorithms
+﻿namespace Common
 {
     public interface IPublishable<TPublishable>
     {

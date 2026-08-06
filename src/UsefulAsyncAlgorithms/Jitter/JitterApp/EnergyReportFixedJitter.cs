@@ -1,4 +1,4 @@
-﻿namespace UsefulAsyncAlgorithms.Jitter
+﻿namespace JitterApp
 {
     /// <summary>
     /// Fixed jitter that prevents server overload by spreading energy reports over time.

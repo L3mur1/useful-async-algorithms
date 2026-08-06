@@ -1,6 +1,6 @@
-﻿using UsefulAsyncAlgorithms.Debounce;
+﻿using DebounceApp;
 
-namespace UsefulAsyncAlgorithmsTests.Debounce
+namespace DebounceAppTests
 {
     public class FileEventsDebouncerTests
     {

@@ -1,6 +1,6 @@
-﻿using UsefulAsyncAlgorithms.DoubleCheckedLocking;
+﻿using DoubleCheckedLockingApp;
 
-namespace UsefulAsyncAlgorithmsTests.DoubleCheckedLocking
+namespace DoubleCheckedLockingAppTests
 {
     public class AQSensorDoubleCheckedLockerTests
     {

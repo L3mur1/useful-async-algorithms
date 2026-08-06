@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Subjects;
 
-namespace UsefulAsyncAlgorithms
+namespace Common
 {
     public class Publisher<TPublishable>(IEnumerable<TPublishable> publishables) : IDisposable
         where TPublishable : IPublishable<TPublishable>

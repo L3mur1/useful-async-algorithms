@@ -1,4 +1,4 @@
-﻿namespace UsefulAsyncAlgorithms.DoubleCheckedLocking
+﻿namespace DoubleCheckedLockingApp
 {
     public class AQSensorDoubleCheckedLocker(AirQualitySensor airQualitySensor, TimeSpan validityDuration) : IDisposable
     {
