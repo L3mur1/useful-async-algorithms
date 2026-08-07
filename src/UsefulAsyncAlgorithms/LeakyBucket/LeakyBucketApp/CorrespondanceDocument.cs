@@ -1,6 +1,9 @@
-﻿namespace LeakyBucketApp
+﻿using Common;
+
+namespace LeakyBucketApp
 {
-    public record CorrespondanceDocument
+    public record CorrespondanceDocument : IPublishable<CorrespondanceDocument>
     {
+        public CorrespondanceDocument CreateNext() => this;
     }
 }
