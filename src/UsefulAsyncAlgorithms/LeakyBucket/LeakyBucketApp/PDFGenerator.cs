@@ -7,7 +7,7 @@
 
         public void Dispose() => generateSemaphore?.Dispose();
 
-        public async Task GeneratePDFAsync()
+        public async Task GeneratePDFAsync(CorrespondanceDocument _)
         {
             try
             {
