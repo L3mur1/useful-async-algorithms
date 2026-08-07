@@ -17,6 +17,7 @@ namespace LeakyBucketAppTests
             await Assert.ThrowsAsync<PDFGenerationThroughputExceededException>(async () =>
             {
                 var correspondanceRef = new CorrespondanceDocument();
+
                 var steadyPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromMilliseconds(300));
                 var sub = steadyPublisher.MessageStream.Subscribe(async doc =>
                 {
