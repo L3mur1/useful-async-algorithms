@@ -8,12 +8,15 @@ namespace LeakyBucketAppTests
         private readonly CancellationTokenSource cts = new CancellationTokenSource();
         private readonly PDFGenerator pdfGenerator = new PDFGenerator(maxPerSecond: 10);
 
-        [Fact]
-        public async Task ShouldThrottleWhenNoBucket()
+        public LeakyBucketTests()
         {
             var maxTestDuration = TimeSpan.FromSeconds(10);
             cts.CancelAfter(maxTestDuration);
+        }
 
+        [Fact]
+        public async Task ShouldThrottleWhenNoBucket()
+        {
             await Assert.ThrowsAsync<PDFGenerationThroughputExceededException>(async () =>
             {
                 var correspondanceRef = new CorrespondanceDocument();
