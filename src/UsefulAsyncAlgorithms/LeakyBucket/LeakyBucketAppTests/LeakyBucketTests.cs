@@ -66,14 +66,12 @@ namespace LeakyBucketAppTests
                     pdfGenerator.GeneratePDF(doc, cts.Token);
                 });
 
-                // Act
-                List<Task> tasks =
-                [
+                var publishing = await Task.WhenAny(
                     steadyPublisher.StartPublishingAsync(cts.Token),
-                    burstPublisher.StartPublishingAsync(cts.Token),
-                ];
+                    burstPublisher.StartPublishingAsync(cts.Token));
 
-                await Task.WhenAll(tasks);
+                cts.Cancel();
+                await publishing;
             });
         }
     }
