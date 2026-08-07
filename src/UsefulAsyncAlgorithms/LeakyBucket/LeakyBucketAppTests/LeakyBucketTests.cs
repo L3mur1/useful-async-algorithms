@@ -10,8 +10,40 @@ namespace LeakyBucketAppTests
 
         public LeakyBucketTests()
         {
-            var maxTestDuration = TimeSpan.FromSeconds(10);
-            cts.CancelAfter(maxTestDuration);
+            var publishingTime = TimeSpan.FromSeconds(10);
+            cts.CancelAfter(publishingTime);
+        }
+
+        [Fact]
+        public async Task ShouldNotThrottle_WhenUsingLeakyBucket()
+        {
+            // Arrange
+            var correspondanceRef = new CorrespondanceDocument();
+            var bucket = new CorrespondanceLeakyBucket(leakInterval: TimeSpan.FromMilliseconds(100));
+
+            var steadyPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromMilliseconds(250));
+            steadyPublisher.MessageStream.Subscribe(bucket.AddToBucket);
+
+            var burstPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromSeconds(2), batchSize: 8);
+            burstPublisher.MessageStream.Subscribe(bucket.AddToBucket);
+
+            bucket.LeakyStream.Subscribe(doc => pdfGenerator.GeneratePDF(doc));
+
+            // Act
+            var exception = await Record.ExceptionAsync(async () =>
+            {
+                var leaking = bucket.StartLeakingAsync();
+
+                await Task.WhenAll(
+                    steadyPublisher.StartPublishingAsync(cts.Token),
+                    burstPublisher.StartPublishingAsync(cts.Token));
+
+                bucket.Complete();
+                await leaking;
+            });
+
+            // Assert
+            Assert.Null(exception);
         }
 
         [Fact]
