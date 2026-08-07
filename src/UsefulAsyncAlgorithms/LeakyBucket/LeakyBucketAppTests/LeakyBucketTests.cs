@@ -19,17 +19,29 @@ namespace LeakyBucketAppTests
         {
             await Assert.ThrowsAsync<PDFGenerationThroughputExceededException>(async () =>
             {
+                // Arrange
                 var correspondanceRef = new CorrespondanceDocument();
 
-                var steadyPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromMilliseconds(300));
-                var sub = steadyPublisher.MessageStream.Subscribe(async doc =>
+                var steadyPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromMilliseconds(250));
+                steadyPublisher.MessageStream.Subscribe(async doc =>
                 {
                     await pdfGenerator.GeneratePDFAsync(doc, cts.Token);
                 });
 
-                await steadyPublisher.StartPublishingAsync(cts.Token);
+                var burstPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromSeconds(2), batchSize: 8);
+                burstPublisher.MessageStream.Subscribe(async doc =>
+                {
+                    await pdfGenerator.GeneratePDFAsync(doc, cts.Token);
+                });
 
-                await Task.CompletedTask;
+                // Act
+                List<Task> tasks =
+                [
+                    steadyPublisher.StartPublishingAsync(cts.Token),
+                    burstPublisher.StartPublishingAsync(cts.Token),
+                ];
+
+                await Task.WhenAll(tasks);
             });
         }
     }
