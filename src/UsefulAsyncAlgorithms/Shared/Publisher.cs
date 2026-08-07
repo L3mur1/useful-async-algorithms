@@ -25,7 +25,7 @@ namespace Common
                 {
                     var item = queue.Dequeue();
 
-                    var next = item.CreateNext();
+                    var next = item.Next();
                     subject.OnNext(next);
 
                     queue.Enqueue(item);
