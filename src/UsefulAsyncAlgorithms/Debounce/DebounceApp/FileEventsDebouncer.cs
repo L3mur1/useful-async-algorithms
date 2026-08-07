@@ -31,7 +31,7 @@ namespace DebounceApp
         {
             this.publisher = publisher;
             this.debounceWindow = debounceWindow;
-            subscription = publisher.PublishableStream.Subscribe(OnNext);
+            subscription = publisher.MessageStream.Subscribe(OnNext);
             cleanUpSub = Observable.Interval(cleanUpInterval).Subscribe(CleanUp);
         }
 

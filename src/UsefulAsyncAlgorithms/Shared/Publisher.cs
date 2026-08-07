@@ -2,12 +2,12 @@
 
 namespace Common
 {
-    public class Publisher<TPublishable>(IEnumerable<TPublishable> publishables) : IDisposable
-        where TPublishable : IPublishable<TPublishable>
+    public class Publisher<TMessage>(IEnumerable<TMessage> publishables) : IDisposable
+        where TMessage : IPublishable<TMessage>
     {
-        private readonly Queue<TPublishable> queue = new Queue<TPublishable>(publishables);
-        private readonly Subject<TPublishable> subject = new();
-        public IObservable<TPublishable> PublishableStream => subject;
+        private readonly Queue<TMessage> queue = new Queue<TMessage>(publishables);
+        private readonly Subject<TMessage> subject = new();
+        public IObservable<TMessage> MessageStream => subject;
 
         public void Dispose()
         {
