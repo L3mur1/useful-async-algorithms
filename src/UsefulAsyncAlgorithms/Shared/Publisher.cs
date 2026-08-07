@@ -4,7 +4,7 @@ namespace Common
 {
     public class Publisher<TPublishable>(
         IEnumerable<TPublishable> publishables,
-        TimeSpan eventsDelay,
+        TimeSpan tickDelay,
         int batchSize = 1) : IDisposable where TPublishable : IPublishable<TPublishable>
     {
         private readonly Queue<TPublishable> queue = new Queue<TPublishable>(publishables);
@@ -33,7 +33,7 @@ namespace Common
 
                 try
                 {
-                    await Task.Delay(eventsDelay, cancellationToken);
+                    await Task.Delay(tickDelay, cancellationToken);
                 }
                 catch (TaskCanceledException)
                 {

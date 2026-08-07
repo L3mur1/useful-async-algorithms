@@ -31,7 +31,7 @@ namespace DebounceAppTests
             var testDuration = TimeSpan.FromSeconds(1);
             var cleanUpInterval = TimeSpan.FromMinutes(1);
 
-            var publisher = new Publisher<FileEvent>(fileEvents, eventsDelay: eventsDelay);
+            var publisher = new Publisher<FileEvent>(fileEvents, tickDelay: eventsDelay);
             var debouncer = new FileEventsDebouncer(publisher, debounceWindow, cleanUpInterval);
 
             var receivedEvents = new List<FileEvent>();
@@ -55,7 +55,7 @@ namespace DebounceAppTests
             var testDuration = TimeSpan.FromSeconds(1);
             var cleanUpInterval = TimeSpan.FromMinutes(1);
 
-            var publisher = new Publisher<FileEvent>(fileEvents, eventsDelay: eventsDelay);
+            var publisher = new Publisher<FileEvent>(fileEvents, tickDelay: eventsDelay);
             var debouncer = new FileEventsDebouncer(publisher, debounceWindow, cleanUpInterval);
 
             var receivedEvents = new List<FileEvent>();
