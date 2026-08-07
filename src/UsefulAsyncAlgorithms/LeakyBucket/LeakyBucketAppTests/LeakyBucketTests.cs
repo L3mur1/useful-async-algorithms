@@ -23,15 +23,15 @@ namespace LeakyBucketAppTests
                 var correspondanceRef = new CorrespondanceDocument();
 
                 var steadyPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromMilliseconds(250));
-                steadyPublisher.MessageStream.Subscribe(async doc =>
+                steadyPublisher.MessageStream.Subscribe(doc =>
                 {
-                    await pdfGenerator.GeneratePDFAsync(doc, cts.Token);
+                    pdfGenerator.GeneratePDF(doc, cts.Token);
                 });
 
                 var burstPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromSeconds(2), batchSize: 8);
-                burstPublisher.MessageStream.Subscribe(async doc =>
+                burstPublisher.MessageStream.Subscribe(doc =>
                 {
-                    await pdfGenerator.GeneratePDFAsync(doc, cts.Token);
+                    pdfGenerator.GeneratePDF(doc, cts.Token);
                 });
 
                 // Act

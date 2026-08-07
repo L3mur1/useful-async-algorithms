@@ -7,12 +7,12 @@
 
         public void Dispose() => generateSemaphore?.Dispose();
 
-        public async Task GeneratePDFAsync(CorrespondanceDocument _, CancellationToken cancellationToken = default)
+        public void GeneratePDF(CorrespondanceDocument _, CancellationToken cancellationToken = default)
         {
+            generateSemaphore.Wait(cancellationToken);
+
             try
             {
-                await generateSemaphore.WaitAsync(cancellationToken);
-
                 var now = DateTime.UtcNow;
                 var windowStart = now.AddSeconds(-1);
 
