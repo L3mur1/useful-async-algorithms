@@ -15,7 +15,7 @@ namespace LeakyBucketAppTests
         }
 
         [Fact]
-        public async Task ShouldThrottleWhenNoBucket()
+        public async Task ShouldThrottle_WhenNoBucket()
         {
             await Assert.ThrowsAsync<PDFGenerationThroughputExceededException>(async () =>
             {
