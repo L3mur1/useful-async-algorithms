@@ -5,53 +5,43 @@ namespace JitterAppTests
     public class EnergyReportFixedJitterTests
     {
         [Fact]
-        public async Task ShouldHaveDifferentCompletionTimes_WhenJitterApplied()
+        public void CalculateDelay_ShouldEqualBaseDelay_WhenZeroJitter()
         {
-            // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
-            var maxJitter = TimeSpan.FromMilliseconds(50);
-            var jitterWithJitter = new EnergyReportFixedJitter(baseDelay, maxJitter);
+            var jitter = new EnergyReportFixedJitter(baseDelay, maxJitter: TimeSpan.Zero);
 
-            // Act - Execute calls sequentially to avoid system load interference
-            var startTime1 = DateTime.UtcNow;
-            await jitterWithJitter.SendWithJitterAsync();
-            var endTime1 = DateTime.UtcNow;
-
-            var startTime2 = DateTime.UtcNow;
-            await jitterWithJitter.SendWithJitterAsync();
-            var endTime2 = DateTime.UtcNow;
-
-            var duration1 = endTime1 - startTime1;
-            var duration2 = endTime2 - startTime2;
-
-            // Assert
-            var timeDifference = Math.Abs(duration1.TotalMilliseconds - duration2.TotalMilliseconds);
-            Assert.True(timeDifference > 5, $"Expected different completion times, but got similar durations: {duration1.TotalMilliseconds:F2}ms vs {duration2.TotalMilliseconds:F2}ms");
+            for (var i = 0; i < 20; i++)
+            {
+                Assert.Equal(baseDelay, jitter.CalculateDelay());
+            }
         }
 
         [Fact]
-        public async Task ShouldHaveSameCompletionTimes_WhenZeroJitter()
+        public void CalculateDelay_ShouldStayWithinRange_WhenJitterApplied()
         {
-            // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
-            var maxJitter = TimeSpan.Zero;
-            var jitterWithoutJitter = new EnergyReportFixedJitter(baseDelay, maxJitter);
+            var maxJitter = TimeSpan.FromMilliseconds(50);
+            var jitter = new EnergyReportFixedJitter(baseDelay, maxJitter);
 
-            // Act - Execute calls sequentially to avoid system load interference
-            var startTime1 = DateTime.UtcNow;
-            await jitterWithoutJitter.SendWithJitterAsync();
-            var endTime1 = DateTime.UtcNow;
+            for (var i = 0; i < 100; i++)
+            {
+                var delay = jitter.CalculateDelay();
+                Assert.InRange(delay, baseDelay, baseDelay + maxJitter);
+            }
+        }
 
-            var startTime2 = DateTime.UtcNow;
-            await jitterWithoutJitter.SendWithJitterAsync();
-            var endTime2 = DateTime.UtcNow;
+        [Fact]
+        public void CalculateDelay_ShouldUseInjectedRandom()
+        {
+            var baseDelay = TimeSpan.FromMilliseconds(100);
+            var maxJitter = TimeSpan.FromMilliseconds(50);
+            var jitter = new EnergyReportFixedJitter(baseDelay, maxJitter, random: new Random(42));
 
-            var duration1 = endTime1 - startTime1;
-            var duration2 = endTime2 - startTime2;
+            var first = jitter.CalculateDelay();
+            var second = new EnergyReportFixedJitter(baseDelay, maxJitter, random: new Random(42)).CalculateDelay();
 
-            // Assert
-            var timeDifference = Math.Abs(duration1.TotalMilliseconds - duration2.TotalMilliseconds);
-            Assert.True(timeDifference <= 10, $"Expected similar completion times with zero jitter, but got different durations: {duration1.TotalMilliseconds:F2}ms vs {duration2.TotalMilliseconds:F2}ms");
+            Assert.Equal(first, second);
+            Assert.InRange(first, baseDelay, baseDelay + maxJitter);
         }
     }
 }

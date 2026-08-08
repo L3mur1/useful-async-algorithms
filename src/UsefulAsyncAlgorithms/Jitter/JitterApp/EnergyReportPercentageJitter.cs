@@ -6,22 +6,33 @@ namespace JitterApp
     /// </summary>
     /// <param name="baseDelay">Base wait time (always applied)</param>
     /// <param name="maxJitterPercentage">Maximum random percentage of baseDelay to add (0-100)</param>
-    public class EnergyReportPercentageJitter(TimeSpan baseDelay, int maxJitterPercentage)
+    public class EnergyReportPercentageJitter(TimeSpan baseDelay, int maxJitterPercentage, Random? random = null)
     {
         private readonly TimeSpan baseDelay = baseDelay;
         private readonly int maxJitterPercentage = maxJitterPercentage;
-        private readonly Random random = new();
+        private readonly Random random = random ?? new();
 
         /// <summary>
-        /// Waits for baseDelay + random percentage jitter before sending.
+        /// Computes baseDelay + random percentage jitter in [0, maxJitterPercentage].
+        /// </summary>
+        public TimeSpan CalculateDelay()
+        {
+            if (maxJitterPercentage <= 0)
+            {
+                return baseDelay;
+            }
+
+            var jitterPercentage = random.Next(0, maxJitterPercentage + 1);
+            var jitterMilliseconds = (int)(baseDelay.TotalMilliseconds * jitterPercentage / 100.0);
+            return baseDelay.Add(TimeSpan.FromMilliseconds(jitterMilliseconds));
+        }
+
+        /// <summary>
+        /// Waits for <see cref="CalculateDelay"/> before sending.
         /// </summary>
         public async Task SendWithJitterAsync()
         {
-            var jitterPercentage = random.Next(0, maxJitterPercentage + 1);
-            var jitterMilliseconds = (int)(baseDelay.TotalMilliseconds * jitterPercentage / 100.0);
-            var totalDelay = baseDelay.Add(TimeSpan.FromMilliseconds(jitterMilliseconds));
-
-            await Task.Delay(totalDelay);
+            await Task.Delay(CalculateDelay());
 
             // Sends report now
         }

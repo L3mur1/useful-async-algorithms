@@ -1,4 +1,5 @@
-using System.Collections.Concurrent;
+using System.
+    Collections.Concurrent;
 using System.Reactive.Subjects;
 
 namespace LeakyBucketApp
@@ -12,15 +13,15 @@ namespace LeakyBucketApp
     public sealed class CorrespondanceLeakyBucket(TimeSpan leakInterval) : IDisposable
     {
         private readonly ConcurrentQueue<CorrespondanceDocument> queue = new();
-        private readonly Subject<CorrespondanceDocument> subject = new();
         private readonly SemaphoreSlim signal = new(0);
-        private int completed;
+        private readonly Subject<CorrespondanceDocument> subject = new();
+        private bool completed;
 
         public IObservable<CorrespondanceDocument> LeakyStream => subject;
 
         public void AddToBucket(CorrespondanceDocument document)
         {
-            if (Volatile.Read(ref completed) == 1)
+            if (completed)
             {
                 throw new InvalidOperationException("Cannot add to a completed leaky bucket.");
             }
@@ -31,10 +32,15 @@ namespace LeakyBucketApp
 
         public void Complete()
         {
-            if (Interlocked.Exchange(ref completed, 1) == 0)
-            {
-                signal.Release();
-            }
+            completed = true;
+            signal.Release();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            subject.Dispose();
+            signal.Dispose();
         }
 
         public async Task StartLeakingAsync()
@@ -46,7 +52,7 @@ namespace LeakyBucketApp
                     subject.OnNext(document);
                     await Task.Delay(leakInterval);
                 }
-                else if (Volatile.Read(ref completed) == 1)
+                else if (completed)
                 {
                     subject.OnCompleted();
                     return;
@@ -55,21 +61,6 @@ namespace LeakyBucketApp
                 {
                     await signal.WaitAsync();
                 }
-            }
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            Dispose(true);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                subject.Dispose();
-                signal.Dispose();
             }
         }
     }
