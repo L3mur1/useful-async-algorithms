@@ -31,7 +31,7 @@ namespace DebounceApp
         {
             this.publisher = publisher;
             this.debounceWindow = debounceWindow;
-            subscription = publisher.PublishableStream.Subscribe(OnNext);
+            subscription = publisher.MessageStream.Subscribe(OnNext);
             cleanUpSub = Observable.Interval(cleanUpInterval).Subscribe(CleanUp);
         }
 
@@ -77,7 +77,7 @@ namespace DebounceApp
                 // Check if the event is within the debounce window
                 if (fileEvent.PublishTime - lastTime < debounceWindow)
                 {
-                    // Ignore event within deboucing window
+                    // Ignore event within debouncing window
                     return;
                 }
             }

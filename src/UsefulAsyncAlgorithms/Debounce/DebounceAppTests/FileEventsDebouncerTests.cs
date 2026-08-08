@@ -31,7 +31,7 @@ namespace DebounceAppTests
             var testDuration = TimeSpan.FromSeconds(1);
             var cleanUpInterval = TimeSpan.FromMinutes(1);
 
-            var publisher = new Publisher<FileEvent>(fileEvents);
+            var publisher = new Publisher<FileEvent>(fileEvents, tickDelay: eventsDelay);
             var debouncer = new FileEventsDebouncer(publisher, debounceWindow, cleanUpInterval);
 
             var receivedEvents = new List<FileEvent>();
@@ -39,7 +39,7 @@ namespace DebounceAppTests
 
             // Act
             cts.CancelAfter(testDuration);
-            await publisher.StartPublishingAsync(eventsDelay, cts.Token);
+            await publisher.StartPublishingAsync(cts.Token);
 
             // Assert
             var samePathEvents = receivedEvents.GroupBy(e => e.Path);
@@ -55,7 +55,7 @@ namespace DebounceAppTests
             var testDuration = TimeSpan.FromSeconds(1);
             var cleanUpInterval = TimeSpan.FromMinutes(1);
 
-            var publisher = new Publisher<FileEvent>(fileEvents);
+            var publisher = new Publisher<FileEvent>(fileEvents, tickDelay: eventsDelay);
             var debouncer = new FileEventsDebouncer(publisher, debounceWindow, cleanUpInterval);
 
             var receivedEvents = new List<FileEvent>();
@@ -63,7 +63,7 @@ namespace DebounceAppTests
 
             // Act
             cts.CancelAfter(testDuration);
-            await publisher.StartPublishingAsync(eventsDelay, cts.Token);
+            await publisher.StartPublishingAsync(cts.Token);
 
             // Assert
             var samePathEvents = receivedEvents.GroupBy(e => e.Path);

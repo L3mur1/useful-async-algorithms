@@ -2,12 +2,14 @@
 
 namespace Common
 {
-    public class Publisher<TPublishable>(IEnumerable<TPublishable> publishables) : IDisposable
-        where TPublishable : IPublishable<TPublishable>
+    public class Publisher<TPublishable>(
+        IEnumerable<TPublishable> publishables,
+        TimeSpan tickDelay,
+        int batchSize = 1) : IDisposable where TPublishable : IPublishable<TPublishable>
     {
         private readonly Queue<TPublishable> queue = new Queue<TPublishable>(publishables);
         private readonly Subject<TPublishable> subject = new();
-        public IObservable<TPublishable> PublishableStream => subject;
+        public IObservable<TPublishable> MessageStream => subject;
 
         public void Dispose()
         {
@@ -15,20 +17,23 @@ namespace Common
             Dispose(true);
         }
 
-        public async Task StartPublishingAsync(TimeSpan eventsDelay, CancellationToken cancellationToken)
+        public async Task StartPublishingAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var item = queue.Dequeue();
+                for (int i = 0; i < batchSize && queue.Count > 0; i++)
+                {
+                    var item = queue.Dequeue();
 
-                var next = item.CreateNext();
-                subject.OnNext(next);
+                    var next = item.Next();
+                    subject.OnNext(next);
 
-                queue.Enqueue(item);
+                    queue.Enqueue(item);
+                }
 
                 try
                 {
-                    await Task.Delay(eventsDelay, cancellationToken);
+                    await Task.Delay(tickDelay, cancellationToken);
                 }
                 catch (TaskCanceledException)
                 {

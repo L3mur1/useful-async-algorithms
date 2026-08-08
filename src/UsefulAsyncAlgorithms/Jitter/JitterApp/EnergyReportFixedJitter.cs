@@ -6,21 +6,32 @@
     /// </summary>
     /// <param name="baseDelay">Base wait time (always applied)</param>
     /// <param name="maxJitter">Maximum additional random delay</param>
-    public class EnergyReportFixedJitter(TimeSpan baseDelay, TimeSpan maxJitter)
+    public class EnergyReportFixedJitter(TimeSpan baseDelay, TimeSpan maxJitter, Random? random = null)
     {
         private readonly TimeSpan baseDelay = baseDelay;
         private readonly TimeSpan maxJitter = maxJitter;
-        private readonly Random random = new();
+        private readonly Random random = random ?? new();
 
         /// <summary>
-        /// Waits for baseDelay + random jitter (0 to maxJitter) before sending.
+        /// Computes baseDelay + random jitter in [0, maxJitter].
+        /// </summary>
+        public TimeSpan CalculateDelay()
+        {
+            if (maxJitter <= TimeSpan.Zero)
+            {
+                return baseDelay;
+            }
+
+            var jitterMilliseconds = random.Next(0, (int)maxJitter.TotalMilliseconds + 1);
+            return baseDelay.Add(TimeSpan.FromMilliseconds(jitterMilliseconds));
+        }
+
+        /// <summary>
+        /// Waits for <see cref="CalculateDelay"/> before sending.
         /// </summary>
         public async Task SendWithJitterAsync()
         {
-            var jitterMilliseconds = random.Next(0, (int)maxJitter.TotalMilliseconds);
-            var totalDelay = baseDelay.Add(TimeSpan.FromMilliseconds(jitterMilliseconds));
-
-            await Task.Delay(totalDelay);
+            await Task.Delay(CalculateDelay());
 
             // Sends report now
         }

@@ -5,79 +5,47 @@ namespace JitterAppTests
     public class EnergyReportPercentageJitterTests
     {
         [Fact]
-        public async Task ShouldHaveDifferentCompletionTimes_WhenJitterApplied()
+        public void CalculateDelay_ShouldEqualBaseDelay_WhenZeroJitter()
         {
-            // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(100);
-            var maxJitterPercentage = 50; // 50% of baseDelay
-            var jitterWithJitter = new EnergyReportPercentageJitter(baseDelay, maxJitterPercentage);
+            var jitter = new EnergyReportPercentageJitter(baseDelay, maxJitterPercentage: 0);
 
-            // Act - Execute calls sequentially to avoid system load interference
-            var startTime1 = DateTime.UtcNow;
-            await jitterWithJitter.SendWithJitterAsync();
-            var endTime1 = DateTime.UtcNow;
-
-            var startTime2 = DateTime.UtcNow;
-            await jitterWithJitter.SendWithJitterAsync();
-            var endTime2 = DateTime.UtcNow;
-
-            var duration1 = endTime1 - startTime1;
-            var duration2 = endTime2 - startTime2;
-
-            // Assert
-            var timeDifference = Math.Abs(duration1.TotalMilliseconds - duration2.TotalMilliseconds);
-            Assert.True(timeDifference > 5, $"Expected different completion times, but got similar durations: {duration1.TotalMilliseconds:F2}ms vs {duration2.TotalMilliseconds:F2}ms");
+            for (var i = 0; i < 20; i++)
+            {
+                Assert.Equal(baseDelay, jitter.CalculateDelay());
+            }
         }
 
         [Fact]
-        public async Task ShouldHaveSameCompletionTimes_WhenZeroJitter()
+        public void CalculateDelay_ShouldStayWithinRange_WhenJitterApplied()
         {
-            // Arrange
-            var baseDelay = TimeSpan.FromMilliseconds(100);
-            var maxJitterPercentage = 0; // No jitter
-            var jitterWithoutJitter = new EnergyReportPercentageJitter(baseDelay, maxJitterPercentage);
-
-            // Act - Execute calls sequentially to avoid system load interference
-            var startTime1 = DateTime.UtcNow;
-            await jitterWithoutJitter.SendWithJitterAsync();
-            var endTime1 = DateTime.UtcNow;
-
-            var startTime2 = DateTime.UtcNow;
-            await jitterWithoutJitter.SendWithJitterAsync();
-            var endTime2 = DateTime.UtcNow;
-
-            var duration1 = endTime1 - startTime1;
-            var duration2 = endTime2 - startTime2;
-
-            // Assert
-            var timeDifference = Math.Abs(duration1.TotalMilliseconds - duration2.TotalMilliseconds);
-            Assert.True(timeDifference <= 10, $"Expected similar completion times with zero jitter, but got different durations: {duration1.TotalMilliseconds:F2}ms vs {duration2.TotalMilliseconds:F2}ms");
-        }
-
-        [Fact]
-        public async Task SendWithJitterAsync_ShouldRespectPercentageJitterRange()
-        {
-            // Arrange
             var baseDelay = TimeSpan.FromMilliseconds(200);
-            var maxJitterPercentage = 25; // 25% of baseDelay = max 50ms additional
+            var maxJitterPercentage = 25;
             var jitter = new EnergyReportPercentageJitter(baseDelay, maxJitterPercentage);
+            var maxDelay = baseDelay + TimeSpan.FromMilliseconds(baseDelay.TotalMilliseconds * maxJitterPercentage / 100.0);
 
-            // Act
-            var startTime = DateTime.UtcNow;
-            await jitter.SendWithJitterAsync();
-            var endTime = DateTime.UtcNow;
+            for (var i = 0; i < 100; i++)
+            {
+                var delay = jitter.CalculateDelay();
+                Assert.InRange(delay, baseDelay, maxDelay);
+            }
+        }
 
-            var actualDuration = endTime - startTime;
+        [Fact]
+        public void CalculateDelay_ShouldUseInjectedRandom()
+        {
+            var baseDelay = TimeSpan.FromMilliseconds(100);
+            var maxJitterPercentage = 50;
+            var jitter = new EnergyReportPercentageJitter(baseDelay, maxJitterPercentage, random: new Random(42));
 
-            // Assert - Duration should be between baseDelay and baseDelay + 25% of baseDelay
-            var minExpectedDuration = baseDelay.TotalMilliseconds;
-            var maxExpectedDuration = baseDelay.TotalMilliseconds * 1.25; // 100% + 25%
+            var first = jitter.CalculateDelay();
+            var second = new EnergyReportPercentageJitter(baseDelay, maxJitterPercentage, random: new Random(42)).CalculateDelay();
 
-            Assert.True(actualDuration.TotalMilliseconds >= minExpectedDuration - 10,
-                $"Duration {actualDuration.TotalMilliseconds:F2}ms should be at least {minExpectedDuration}ms (base delay)");
-
-            Assert.True(actualDuration.TotalMilliseconds <= maxExpectedDuration + 10,
-                $"Duration {actualDuration.TotalMilliseconds:F2}ms should be at most {maxExpectedDuration}ms (base delay + 25%)");
+            Assert.Equal(first, second);
+            Assert.InRange(
+                first,
+                baseDelay,
+                baseDelay + TimeSpan.FromMilliseconds(baseDelay.TotalMilliseconds * maxJitterPercentage / 100.0));
         }
     }
 }
