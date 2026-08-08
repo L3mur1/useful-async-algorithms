@@ -1,5 +1,4 @@
-using System.
-    Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Reactive.Subjects;
 
 namespace LeakyBucketApp
@@ -10,16 +9,16 @@ namespace LeakyBucketApp
     /// Call <see cref="Complete"/> when no more items will be added; leaking then
     /// finishes after the queue has drained.
     /// </summary>
-    public sealed class CorrespondanceLeakyBucket(TimeSpan leakInterval) : IDisposable
+    public sealed class CorrespondenceLeakyBucket(TimeSpan leakInterval) : IDisposable
     {
-        private readonly ConcurrentQueue<CorrespondanceDocument> queue = new();
+        private readonly ConcurrentQueue<CorrespondenceDocument> queue = new();
         private readonly SemaphoreSlim signal = new(0);
-        private readonly Subject<CorrespondanceDocument> subject = new();
+        private readonly Subject<CorrespondenceDocument> subject = new();
         private bool completed;
 
-        public IObservable<CorrespondanceDocument> LeakyStream => subject;
+        public IObservable<CorrespondenceDocument> LeakyStream => subject;
 
-        public void AddToBucket(CorrespondanceDocument document)
+        public void AddToBucket(CorrespondenceDocument document)
         {
             if (completed)
             {

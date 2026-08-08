@@ -7,7 +7,7 @@
 
         public void Dispose() => generateSemaphore?.Dispose();
 
-        public void GeneratePDF(CorrespondanceDocument _, CancellationToken cancellationToken = default)
+        public void GeneratePDF(CorrespondenceDocument _, CancellationToken cancellationToken = default)
         {
             generateSemaphore.Wait(cancellationToken);
 
@@ -23,7 +23,7 @@
 
                 if (callTimestamps.Count >= maxPerSecond)
                 {
-                    throw PDFGenerationThroughputExceededException.PerMinuteExceeded(maxPerSecond);
+                    throw PDFGenerationThroughputExceededException.PerSecondExceeded(maxPerSecond);
                 }
 
                 callTimestamps.Enqueue(now);

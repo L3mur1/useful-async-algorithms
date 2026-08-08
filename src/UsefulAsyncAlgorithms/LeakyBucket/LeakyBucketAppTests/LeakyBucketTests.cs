@@ -18,13 +18,13 @@ namespace LeakyBucketAppTests
         public async Task ShouldNotThrottle_WhenUsingLeakyBucket()
         {
             // Arrange
-            var correspondanceRef = new CorrespondanceDocument();
-            var bucket = new CorrespondanceLeakyBucket(leakInterval: TimeSpan.FromMilliseconds(100));
+            var correspondenceRef = new CorrespondenceDocument();
+            var bucket = new CorrespondenceLeakyBucket(leakInterval: TimeSpan.FromMilliseconds(100));
 
-            var steadyPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromMilliseconds(250));
+            var steadyPublisher = new Publisher<CorrespondenceDocument>([correspondenceRef], tickDelay: TimeSpan.FromMilliseconds(250));
             steadyPublisher.MessageStream.Subscribe(bucket.AddToBucket);
 
-            var burstPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromSeconds(2), batchSize: 8);
+            var burstPublisher = new Publisher<CorrespondenceDocument>([correspondenceRef], tickDelay: TimeSpan.FromSeconds(2), batchSize: 8);
             burstPublisher.MessageStream.Subscribe(bucket.AddToBucket);
 
             bucket.LeakyStream.Subscribe(doc => pdfGenerator.GeneratePDF(doc));
@@ -52,15 +52,15 @@ namespace LeakyBucketAppTests
             await Assert.ThrowsAsync<PDFGenerationThroughputExceededException>(async () =>
             {
                 // Arrange
-                var correspondanceRef = new CorrespondanceDocument();
+                var correspondenceRef = new CorrespondenceDocument();
 
-                var steadyPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromMilliseconds(250));
+                var steadyPublisher = new Publisher<CorrespondenceDocument>([correspondenceRef], tickDelay: TimeSpan.FromMilliseconds(250));
                 steadyPublisher.MessageStream.Subscribe(doc =>
                 {
                     pdfGenerator.GeneratePDF(doc, cts.Token);
                 });
 
-                var burstPublisher = new Publisher<CorrespondanceDocument>([correspondanceRef], tickDelay: TimeSpan.FromSeconds(2), batchSize: 8);
+                var burstPublisher = new Publisher<CorrespondenceDocument>([correspondenceRef], tickDelay: TimeSpan.FromSeconds(2), batchSize: 8);
                 burstPublisher.MessageStream.Subscribe(doc =>
                 {
                     pdfGenerator.GeneratePDF(doc, cts.Token);
