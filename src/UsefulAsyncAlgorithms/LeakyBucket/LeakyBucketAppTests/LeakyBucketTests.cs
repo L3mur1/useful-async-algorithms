@@ -74,5 +74,21 @@ namespace LeakyBucketAppTests
                 await publishing;
             });
         }
+
+        [Fact]
+        public void ShouldThrow_WhenCapacityExceeded()
+        {
+            // Arrange
+            var correspondenceRef = new CorrespondenceDocument();
+            var bucket = new CorrespondenceLeakyBucket(leakInterval: TimeSpan.FromMilliseconds(100), capacity: 3);
+
+            // Act
+            bucket.AddToBucket(correspondenceRef);
+            bucket.AddToBucket(correspondenceRef);
+            bucket.AddToBucket(correspondenceRef);
+
+            // Act && Assert
+            Assert.Throws<BucketOverflowException>(() => bucket.AddToBucket(correspondenceRef));
+        }
     }
 }
