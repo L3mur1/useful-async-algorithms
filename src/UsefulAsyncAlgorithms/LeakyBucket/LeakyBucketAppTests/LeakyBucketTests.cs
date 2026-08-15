@@ -19,7 +19,7 @@ namespace LeakyBucketAppTests
         {
             // Arrange
             var correspondenceRef = new CorrespondenceDocument();
-            var bucket = new CorrespondenceLeakyBucket(leakInterval: TimeSpan.FromMilliseconds(100));
+            var bucket = new CorrespondenceLeakyBucket(leakInterval: TimeSpan.FromMilliseconds(100), capacity: 100);
 
             var steadyPublisher = new Publisher<CorrespondenceDocument>([correspondenceRef], tickDelay: TimeSpan.FromMilliseconds(250));
             steadyPublisher.MessageStream.Subscribe(bucket.AddToBucket);

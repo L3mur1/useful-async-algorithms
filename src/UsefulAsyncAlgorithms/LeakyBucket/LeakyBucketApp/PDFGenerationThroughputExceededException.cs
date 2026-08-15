@@ -15,6 +15,6 @@
         }
 
         public static PDFGenerationThroughputExceededException PerSecondExceeded(int maxPerSecond)
-            => new PDFGenerationThroughputExceededException($"PDF generation throughput exceeded. Maximum {maxPerSecond} requests per second allowed.");
+            => new($"PDF generation throughput exceeded. Maximum {maxPerSecond} requests per second allowed.");
     }
 }
