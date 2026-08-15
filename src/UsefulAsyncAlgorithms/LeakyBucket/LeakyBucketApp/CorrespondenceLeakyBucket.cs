@@ -9,7 +9,9 @@ namespace LeakyBucketApp
     /// Call <see cref="Complete"/> when no more items will be added; leaking then
     /// finishes after the queue has drained.
     /// </summary>
-    public sealed class CorrespondenceLeakyBucket(TimeSpan leakInterval) : IDisposable
+    public sealed class CorrespondenceLeakyBucket(
+        TimeSpan leakInterval,
+        int capacity) : IDisposable
     {
         private readonly ConcurrentQueue<CorrespondenceDocument> queue = new();
         private readonly SemaphoreSlim signal = new(0);
@@ -23,6 +25,12 @@ namespace LeakyBucketApp
             if (completed)
             {
                 throw new InvalidOperationException("Cannot add to a completed leaky bucket.");
+            }
+
+            var newCount = queue.Count + 1;
+            if (newCount > capacity)
+            {
+                throw BucketOverflowException.CapacityExceeded(newCount, capacity);
             }
 
             queue.Enqueue(document);
